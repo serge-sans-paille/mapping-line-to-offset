@@ -17,3 +17,20 @@ versions. The existing implementations are:
   short-circuit
 - ``sse_align.cpp``: legacy SSE implementaion which enforces alignment
 - ``sse.cpp``: SSE implementation without any alignement enforcment.
+
+Usage
+=====
+
+from the `src` directory, run
+
+```
+$ make perf
+```
+
+to get some performance measurements and
+
+```
+$ make check
+```
+
+to run the testsuite (well, there's only one test, but you got the idea).
