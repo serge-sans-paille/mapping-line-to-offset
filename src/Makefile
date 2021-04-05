@@ -1,4 +1,4 @@
-PROG= ref seq seq_memchr bithack sse_align sse sse_memchr
+PROG= ref seq seq_memchr bithack bithack_scan sse_align sse sse_memchr
 CPPFLAGS=-std=c++14
 CXXFLAGS=-O2
 

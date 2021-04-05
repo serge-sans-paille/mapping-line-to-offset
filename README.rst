@@ -15,8 +15,9 @@ versions. The existing implementations are:
   hint.
 - ``seq_memchr.cpp``: same as ``seq.cpp`` with a short path if the file contains no
   ``\r``.
-- ``bithack.cpp``: loads a word at a time and uses bit twiddling for some fast
-  short-circuit
+- ``bithack_scan.cpp``: loads a word at a time and uses bit twiddling for
+  multi-byte word handling
+- ``bithack.cpp``: same has ``bithack_scan.cpp`` with a cheaper fuzzy check
 - ``sse_align.cpp``: legacy SSE implementaion which enforces alignment
 - ``sse.cpp``: SSE implementation without any alignement enforcment.
 - ``sse_memchr.cpp``: same as ``sse.cpp`` with a short path if the file contains no
