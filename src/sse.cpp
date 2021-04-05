@@ -33,30 +33,19 @@ int main(int argc, char const*argv[]) {
 #ifdef __SSE2__
 
   const auto LFs = VBROADCAST('\n');
-  const auto Diffs = VBROADCAST('\r' - '\n' + 1);
+  const auto CRs = VBROADCAST('\r');
 
   while (I + sizeof(LFs) < BufLen) {
     auto Chunk1 = VLOAD(Buf + I);
-    auto Cmp1 = VLT(Chunk1 - LFs, Diffs);
+    auto Cmp1 = VOR(VEQ(Chunk1, LFs), VEQ(Chunk1, CRs));
     unsigned Mask = VMOVEMASK(Cmp1) ;
 
     if(Mask) {
-      do {
-        unsigned N = __builtin_ctz(Mask);
-        I += N;
-        Mask >>= N;
-        if (Buf[I] == '\n') {
-          LineOffsets.push_back(I + 1);
-        } else if(Buf[I] == '\r'){
-          if (Buf[I + 1] == '\n') {
-            ++I;
-            Mask >>= 1;
-          }
-          LineOffsets.push_back(I + 1);
-        }
-        ++I;
-        Mask >>= 1;
-      } while (Mask);
+      unsigned N = __builtin_ctz(Mask);
+      I += N;
+      Mask >>= N;
+      I += ((Buf[I] == '\r') && (Buf[I + 1] == '\n'))? 2 : 1;
+      LineOffsets.push_back(I);
     }
     else
       I += sizeof(LFs);
