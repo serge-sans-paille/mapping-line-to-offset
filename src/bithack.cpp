@@ -7,7 +7,7 @@
 #include <cstring>
 
 template <class T>
-static constexpr inline bool likelyhasbetween(T x, unsigned char m,
+static constexpr inline T likelyhasbetween(T x, unsigned char m,
                                               unsigned char n) {
   // see http://graphics.stanford.edu/~seander/bithacks.html#HasBetweenInWord
   return (((x) - ~0UL / 255 * (n)) & ~(x) &
@@ -38,7 +38,8 @@ int main(int argc, char const*argv[]) {
     do {
       memcpy(&Word, Buf + I, sizeof(Word));
       // no new line => jump over sizeof(Word) bytes.
-      if (!likelyhasbetween(Word, '\n' - 1, '\r' + 1)) {
+      auto Mask = likelyhasbetween(Word, '\n' - 1, '\r'+1 );
+      if (!Mask) {
         I += sizeof(Word);
         continue;
       }
@@ -47,22 +48,17 @@ int main(int argc, char const*argv[]) {
       // Note that according to
       // http://graphics.stanford.edu/~seander/bithacks.html#HasBetweenInWord,
       // likelyhasbetween may have false positive for the upper bound.
-      unsigned char Byte;
-      for (;;) {
-        Byte = Word &0xFF;
-        Word >>=8;
-        ++I;
-        if('\n' <= Byte && Byte <= '\r' + 1) {
-          if (Byte == '\n') {
-            LineOffsets.push_back(I);
-          } else if (Byte == '\r') {
-            // If this is \r\n, skip both characters.
-            if (Buf[I] == '\n')
-              ++I;
-            LineOffsets.push_back(I);
-          }
-          break;
-        }
+      unsigned N = __builtin_ctzl(Mask) - 7;
+      Word >>= N;
+      I += N / 8 + 1;
+      unsigned char Byte = Word;
+      if (Byte == '\n') {
+        LineOffsets.push_back(I);
+      } else if (Byte == '\r') {
+        // If this is \r\n, skip both characters.
+        if (Buf[I] == '\n')
+          ++I;
+        LineOffsets.push_back(I);
       }
     }
     while (I < BufLen - sizeof(Word));
