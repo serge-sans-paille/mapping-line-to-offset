@@ -62,7 +62,7 @@ int main(int argc, char const*argv[]) {
       else
         I += sizeof(Word);
     }
-    while (I < BufLen - sizeof(Word));
+    while (I < BufLen - sizeof(Word) - 1);
   }
 
   // Handle tail using a regular check.

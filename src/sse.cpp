@@ -35,7 +35,7 @@ int main(int argc, char const*argv[]) {
   const auto LFs = VBROADCAST('\n');
   const auto CRs = VBROADCAST('\r');
 
-  while (I + sizeof(LFs) < BufLen) {
+  while (I + sizeof(LFs) + 1 < BufLen) {
     auto Chunk1 = VLOAD(Buf + I);
     auto Cmp1 = VOR(VEQ(Chunk1, LFs), VEQ(Chunk1, CRs));
     unsigned Mask = VMOVEMASK(Cmp1) ;

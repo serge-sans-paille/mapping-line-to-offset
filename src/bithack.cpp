@@ -34,7 +34,7 @@ int main(int argc, char const*argv[]) {
 
   // scan sizeof(Word) bytes at a time for new lines.
   // This is much faster than scanning each byte independently.
-  if (BufLen > sizeof(Word)) {
+  if (BufLen > 1 + sizeof(Word)) {
     do {
       memcpy(&Word, Buf + I, sizeof(Word));
       // no new line => jump over sizeof(Word) bytes.
@@ -61,7 +61,7 @@ int main(int argc, char const*argv[]) {
         LineOffsets.push_back(I);
       }
     }
-    while (I < BufLen - sizeof(Word));
+    while (I < BufLen - sizeof(Word) - 1);
   }
 
   // Handle tail using a regular check.

@@ -36,7 +36,7 @@ int main(int argc, char const*argv[]) {
   const auto Diffs = VBROADCAST('\r' - '\n' + 1);
   if(!memchr(Buf, '\r', BufLen)) {
 
-    while (I + sizeof(LFs) < BufLen) {
+    while (I + sizeof(LFs) + 1 < BufLen) {
       auto Chunk1 = VLOAD(Buf + I);
       auto Cmp1 = VEQ(Chunk1, LFs);
       unsigned Mask = VMOVEMASK(Cmp1) ;
@@ -54,7 +54,7 @@ int main(int argc, char const*argv[]) {
     }
   }
   else {
-    while (I + sizeof(LFs) < BufLen) {
+    while (I + sizeof(LFs) + 1 < BufLen) {
       auto Chunk1 = VLOAD(Buf + I);
       auto Cmp1 = VLT(Chunk1 - LFs, Diffs);
       unsigned Mask = VMOVEMASK(Cmp1) ;
