@@ -21,7 +21,7 @@ int main(int argc, char const*argv[]) {
   unsigned I = 0;
   while (I < BufLen) {
     // Use a fast check to catch both newlines
-    if (__builtin_expect(Buf[I] <= '\r', 0)) {
+    if (__builtin_expect((Buf[I] - '\n') <= ('\r' - '\n'), 0)) {
       if (Buf[I] == '\n') {
         LineOffsets.push_back(I + 1);
       } else if (Buf[I] == '\r') {
