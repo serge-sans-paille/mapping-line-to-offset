@@ -37,6 +37,9 @@ int main(int argc, char const*argv[]) {
   if (BufLen > 1 + sizeof(Word)) {
     do {
       memcpy(&Word, Buf + I, sizeof(Word));
+#if defined(BYTE_ORDER) && defined(BIG_ENDIAN) && BYTE_ORDER == BIG_ENDIAN
+      Word = __builtin_bswap64(Word);
+#endif
       // no new line => jump over sizeof(Word) bytes.
       auto Mask = likelyhasbetween(Word, '\n' - 1, '\r'+1 );
       if (!Mask) {

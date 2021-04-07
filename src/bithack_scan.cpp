@@ -51,6 +51,9 @@ int main(int argc, char const*argv[]) {
   if (BufLen > sizeof(Word)) {
     do {
       memcpy(&Word, Buf + I, sizeof(Word));
+#if defined(BYTE_ORDER) && defined(BIG_ENDIAN) && BYTE_ORDER == BIG_ENDIAN
+      Word = __builtin_bswap64(Word);
+#endif
       if(uint64_t Mask = hasvalue(Word, '\r') | hasvalue(Word, '\n'))
       {
         unsigned N = __builtin_ctzl(Mask) - 7;
